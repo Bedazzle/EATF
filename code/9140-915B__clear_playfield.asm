@@ -1,0 +1,15 @@
+clear_playfield:
+  LD HL,PLAYFIELD
+  LD DE,PLAYFIELD+1
+  LD BC,767
+  LD A,32
+  LD (HL),A
+  LDIR
+  LD HL,BUFFER_MORE
+  LD DE,BUFFER_MORE+1
+  LD BC,767
+  CPL
+  LD (HL),A
+  LDIR
+
+  RET

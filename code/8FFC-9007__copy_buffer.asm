@@ -1,0 +1,7 @@
+copy_buffer:
+  LD DE,PLAYFIELD
+  LD HL,SOME_BUFFER
+  LD BC,BUFFER_SIZE		;768
+  LDIR
+
+  RET
