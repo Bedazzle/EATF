@@ -21,10 +21,10 @@ game_play:
   CALL clear_playfield
   CALL repaint_buffer
 
-  LD HL,block_1		;39878	DE=$0090 BC=$005A (SCOREBONUS)
+  LD HL,SCOREBONUS
   CALL deblocker
 
-  LD HL,block_2		;39976	DE=$0120 BC=$0240
+  LD HL,ERICDEATH
   CALL deblocker
 
 level_start:
@@ -67,14 +67,14 @@ play_loop:
   CALL animate_bombs
   CALL process_bombs
   CALL drop_bomb
-  CALL L_8CDD			; 36061
+  CALL process_eric
   CALL animate_floater
   CALL show_gold
   CALL show_exit
   CALL process_floats
   CALL pick_gold
   CALL pick_exit
-  CALL L_8C6D			; 35949
+  CALL show_eric
   CALL extra_floaters
   CALL exit_door_check
   CALL process_time
@@ -142,9 +142,9 @@ no_bonus:
   PUSH AF
   AND 3
 
-  LD HL,xxx_1
+  LD HL,extra_sprites_1
 
-  CALL Z,sub_816F
+  CALL Z,switch_extra
 
   POP AF
   AND 252		; %1111 1100
@@ -177,34 +177,39 @@ no_bonus:
 
   JP level_start
 
-sub_816F:
-  LD HL,xxx_2
+switch_extra:
+  LD HL,extra_sprites_2
   RET
 
 
   include "/data/8173-8180__sound_score.asm"
 
 
-  ; $8181	; 33153
-xxx_1:
-  DEFW spr_1		;DEFB 120,159
-  DEFW spr_2		;DEFB 142,159
-  DEFW spr_3		;DEFB 76,159
-  DEFW spr_4		;DEFB 98,159
-  DEFW spr_5		;DEFB 164,159
-  DEFW spr_6		;DEFB 186,159
-  DEFW spr_7		;DEFB 200,158
-  DEFW spr_8		;DEFB 222,158
+extra_sprites_1:
+  DEFW m_gun_hi
+  DEFW m_gun_lo
+  
+  DEFW money_hi
+  DEFW money_lo
 
-xxx_2:
-  DEFW spr_9		;DEFB 156,158
-  DEFW spr_10	;DEFB 178,158
-  DEFW spr_11	;DEFB 244,158
-  DEFW spr_12	;DEFB 10,159
-  DEFW spr_13	;DEFB 112,158
-  DEFW spr_14	;DEFB 134,158
-  DEFW spr_15	;DEFB 32,159
-  DEFW spr_16	;DEFB 54,159
+  DEFW bicycle_hi
+  DEFW bicycle_lo
+  
+  DEFW car_hi
+  DEFW car_lo
+
+extra_sprites_2:
+  DEFW tnt_hi
+  DEFW tnt_lo
+
+  DEFW coctail_hi
+  DEFW coctail_lo
+
+  DEFW coke_hi
+  DEFW coke_lo
+
+  DEFW pipe_hi
+  DEFW pipe_lo
 
 
   include "/code/81A1-81B2__do_level_exit.asm"
@@ -281,161 +286,8 @@ FLO_MOVE:
   DEFB 255,0		; up
   DEFB 1,0		; down
 
-; Routine at 34989
-;
-process_floats:
-  LD IX,FLOATERS
-next_bubble:
-  LD A,(IX+0)
-  INC A
-  RET Z
 
-  DEC A
-  JP Z,get_next_bubble
-
-  CP 1
-  JP Z,35134
-
-  LD C,(IX+1)
-  LD B,(IX+2)
-  CALL calc_buff_addr
-
-  LD A,(IX+0)
-  ADD A,A
-  ADD A,30
-  CP 48
-  JR C,35033
-
-  LD A,32
-  CALL put_4x_block
-
-  JR 35036
-
-  CALL put_object
-
-  PUSH HL
-
-  LD HL,FLOA_DEATH
-  CALL safe_increment
-
-  POP HL
-  LD A,(FLOA_DEATH)
-  OR A
-  JP NZ,get_next_bubble
-
-  LD A,(IX+0)
-  INC A
-  CP 10
-  JR Z,35080
-
-  LD (IX+0),A
-  ADD A,A
-  ADD A,A
-  ADD A,A
-  ADD A,A
-  LD E,A
-  LD D,0
-  PUSH BC
-
-  LD BC,15
-  IFDEF SOUND_KILL
-	CALL sound_buzz
-  ELSE
-    nop
-    nop
-    nop
-  ENDIF
-
-  POP BC
-  JP get_next_bubble
-
-  ; --------------------
-  XOR A
-  LD (IX+0),A
-  LD A,(IX+3)
-  ADD A,A
-  ADD A,A
-  INC A
-  INC A
-  LD B,A
-  CALL random
-
-  AND 3
-  INC A
-  ADD A,B
-  LD C,A
-  LD B,0
-  LD HL,(SCORE)
-  ADD HL,BC
-  LD (SCORE),HL
-  
-  ; --------------------
-  
-  LD A,(ERIC_FRAME)
-  CP 6
-  JR NC,get_next_bubble
-
-  LD A,(LEVEL_FLOAT)
-  DEC A
-  LD (LEVEL_FLOAT),A
-  JR NZ,get_next_bubble
-
-  LD A,(ALL_KILLED)
-  INC A
-  LD (ALL_KILLED),A
-  JR get_next_bubble
-
-  ;------------------------
-  LD C,(IX+1)
-  LD B,(IX+2)
-  CALL calc_buff_addr
-  
-  LD A,(IX+3)
-  ADD A,A
-  ADD A,A
-  ADD A,192
-  LD HL,FLIP_FLOAT
-  ADD A,(HL)
-  CALL check_224
-  
-  INC A
-  INC BC
-  CALL check_224
-  
-  LD HL,31
-  ADD HL,BC
-  LD B,H
-  LD C,L
-  ADD A,15
-  CALL check_224
-  
-  INC BC
-  INC A
-  CALL check_224
-
-get_next_bubble:
-  LD BC,7
-  ADD IX,BC
-  JP next_bubble
-
-  ;------------------------
-; Routine at 35186
-;
-check_224:
-  PUSH AF
-  LD A,(BC)
-  CP 224
-  JR C,no_change
-
-  LD (IX+0),2	; remove floater
-
-no_change:
-  POP AF
-  LD (BC),A
-  RET
-  ;------------------------
-
-  
+  include "/code/88AD-897E__process_floats.asm"
   include "/code/897F-89E4__drop_bomb.asm"
   include "/code/89E5-89F8__reset_bombs.asm"
   include "/code/89F9-8A54__animate_bombs.asm"
@@ -505,7 +357,9 @@ loop_bombs:
   LD A,D
   CALL put_object
   EXX
-; This entry point is used by the routines at 35662 and 35680.
+
+;L_35642:
+loc_8B3A:
   LD BC,4
   ADD IX,BC
   JR loop_bombs
@@ -516,8 +370,8 @@ loc_35649:
   LD A,(BC)
   CP 224
   RET C
-  LD (IX+0),4
-  LD (IX+3),6
+  LD (IX+0),4	; bomb active
+  LD (IX+3),6	; fuse gap
   
   RET
   
@@ -534,7 +388,7 @@ loc_35649:
 
   LD A,32
   CALL put_4x_block	;35936
-  JR 35642
+  JR loc_8B3A		;L_35642	;35642
 
 ; Routine at 35680
 ;
@@ -552,47 +406,53 @@ loc_35649:
   INC A
   CP 240
   JR C,35706
+
   LD A,32
   EXX
   LD E,A
   EXX
 
   LD HL,l_36902
-; This entry point is used by the routines at 35745 and 35753.
+loc_8B80:
   LD A,(HL)
   OR A
-  JR Z,35720
+  JR Z,loc_8B88		;35720
+
   ADD A,A
   OR A
-  JR Z,35642
+  JR Z,loc_8B3A		;35642
+
+loc_8B88:
   LD A,(HL)
   INC HL
-  ADD A,(IX+2)
+  ADD A,(IX+2)	; bomb y
   LD B,A
   LD A,(HL)
   INC HL
-  ADD A,(IX+1)
+  ADD A,(IX+1)	; bomb x
   LD C,A
-  CALL 35829
+  CALL sub_8BF5		;35829
   CP 136
-  JR NZ,35753
-  JR 35745
+  JR NZ,loc_8BA9		;35753
+  JR loc_8BA1		;35745
 
 ; Data block at 35741
   DEFB 254,137,32,8		; previous JR can be removed, if these 4 bytes are placed in different location
 
 ; Routine at 35745
 ;
+loc_8BA1:
   INC HL
   INC HL
   INC HL
   INC HL
   INC HL
   INC HL
-  JR 35712
+  JR loc_8B80
 
 ; Routine at 35753
 ;
+loc_8BA9:
   LD A,(HL)
   INC HL
   ADD A,(IX+2)
@@ -601,16 +461,18 @@ loc_35649:
   INC HL
   ADD A,(IX+1)
   LD C,A
-  CALL 35829
+  CALL sub_8BF5		;35829
   CP 128
   JR C,35782
+
   CP 138
   JR NC,35782
+
   INC HL
   INC HL
   INC HL
   INC HL
-  JR 35712
+  JR loc_8B80
 
   LD A,(HL)
   INC HL
@@ -629,7 +491,7 @@ loc_35649:
   EX AF,AF'
   INC HL
   INC HL
-  JR 35712
+  JR loc_8B80
 
   EX AF,AF'
   LD A,(HL)
@@ -641,10 +503,11 @@ loc_35649:
   ADD A,(IX+1)
   LD C,A
   CALL 35886
-  JR 35712
+  JR loc_8B80
 
 ; Routine at 35829
 ;
+sub_8BF5:
   PUSH BC
   CALL calc_buff_addr
   LD A,(BC)
@@ -658,18 +521,24 @@ loc_35649:
   CP 136
   RET Z
   CP 128
-  JR C,35858
+  JR C,loc_8C12		;35858
   CP 138
-  JR NC,35858
-  JR 35863
+  JR NC,loc_8C12		;35858
+  JR loc_8C17		;35863
+
+loc_8C12:
   EXX
   LD A,E
   EXX
-  JR 35872
+  JR loc_8C20		;35872
+
+loc_8C17:
   CALL 35874
   CP 136
-  JR NZ,35872
+  JR NZ,loc_8C20		;35872
+
   LD A,32
+loc_8C20:
   LD (BC),A
   RET
 
@@ -715,256 +584,24 @@ L_35883:
 
   include "/code/8C4F-8C5F__put_object.asm"
   include "/code/8C60-8C6C__put_4x_block.asm"
-
-  
-; Routine at 35949
-;
-L_8C6D:
-  LD A,(ERIC_FRAME)
-  CP 6
-  JR NC,loc_8C95		;35989
-
-  CP 2
-  JR NC,loc_8C87		;35975
-
-  OR A
-  JR NZ,loc_8C83		;35971
-
-  INC A
-  LD (ERIC_FRAME),A
-  LD E,138			; ERIC drop bomb sprite
-  JR loc_8C9D		;35997
-
-loc_8C83:
-  LD E,140			; ERIC sprite
-  JR loc_8C9D		;35997
-
-loc_8C87:
-  DEC A
-  DEC A
-  ADD A,A
-  ADD A,A
-  ADD A,160
-  LD E,A
-  LD A,(ERIC_SPRITE)
-  ADD A,E
-  LD E,A
-  JR loc_8C9D		;35997
-
-loc_8C95:
-  SUB 6
-  ADD A,A
-  LD E,A
-  LD A,78
-  SUB E
-  LD E,A
-
-loc_8C9D:
-  LD A,(ERIC_Y)
-  LD B,A
-  LD A,(ERIC_X)
-  LD C,A
-  CALL calc_buff_addr
-  CALL l_36031
-  CALL l_36031
-  LD HL,30
-  ADD HL,BC
-  LD B,H
-  LD C,L
-  LD A,E
-  ADD A,14
-  LD E,A
-  CALL l_36031
-  CALL l_36031
-  RET
-
-; Routine at 36031
-;
-l_36031:
-  LD A,(BC)
-  LD D,A
-  LD A,E
-  LD (BC),A
-  INC BC
-  INC E
-  LD A,D
-  CP 192
-  RET C
-  LD A,(ERIC_FRAME)
-  CP 6
-  RET NC
-  LD A,6
-  IFNDEF IMMUNE_ERIC
-	LD (ERIC_FRAME),A
-  ELSE
-	nop
-	nop
-	nop
-  ENDIF
-  
-  RET
+  include "/code/8C6D-8CD4__show_eric.asm"
 
 
-ERIC_MOVE:		;DATA_36053:
+ERIC_MOVE:
   DEFB 0,1
   DEFB 255,0
   DEFB 1,0
   DEFB 0,255
 
 
-L_8CDD:
-  LD A,(ANI_DELAY)
-  OR A
-  RET NZ
+  include "/code/8CDD-8D88__process_eric.asm"
 
-  LD A,(ERIC_FRAME)
-  CP 6
-  JR C,loc_8D12		;36114
-  CP 13
-  JR Z,kill_eric		;36108
-
-  LD HL,ERIC_DEATH
-  CALL safe_increment
-
-  LD A,(ERIC_DEATH)
-  OR A
-  RET NZ
-  LD A,(ERIC_FRAME)
-  INC A
-  LD (ERIC_FRAME),A
-  ADD A,A
-  ADD A,A
-  ADD A,A
-  LD E,A
-  LD D,0
-
-  LD BC,15
-  IFDEF SOUND_DEATH
-	CALL sound_buzz
-  ELSE
-    nop
-    nop
-    nop
-  ENDIF
-
-  RET
-
-kill_eric:
-  LD A,1
-  LD (ERIC_DEAD),A
-  RET
-
-loc_8D12:
-  LD B,2
-  CALL control_eric
-
-  CP 5
-  JR Z,loc_8D29		;36137
-
-  INC B
-  CP 7
-  JR Z,loc_8D29		;36137
-
-  INC B
-  CP 3
-  JR Z,loc_8D29		;36137
-
-  INC B
-  CP 1
-  RET NZ
-
-loc_8D29:
-  LD A,(ERIC_SPRITE)
-  XOR 2
-  LD (ERIC_SPRITE),A
-  LD HL,ERIC_MOVE	;DATA_36053
-  LD A,B
-  LD E,A
-  DEC A
-  DEC A
-  ADD A,A
-  LD B,0
-  LD C,A
-  ADD HL,BC
-  LD A,(ERIC_X)
-  ADD A,(HL)
-  LD C,A
-  LD A,(ERIC_Y)
-  INC HL
-  ADD A,(HL)
-  LD B,A
-  PUSH BC
-
-  CALL calc_buff_addr
-
-  LD D,0
-
-  CALL 36234
-  CALL 36234
-
-  LD HL,30
-  ADD HL,BC
-  LD B,H
-  LD C,L
-
-  CALL 36234
-  CALL 36234
-
-  LD A,D
-  OR A
-  POP BC
-  RET NZ
-  LD A,B
-  LD (ERIC_Y),A
-  LD A,C
-  LD (ERIC_X),A
-  LD A,E
-  LD (ERIC_FRAME),A
-  LD B,8
-  LD A,(ERIC_SPRITE)
-  SLA A
-  SLA A
-  SLA A
-  OR 64
-  LD E,A
-  LD D,0
-  PUSH BC
-
-  LD BC,5
-  IFDEF SOUND_XXX
-	CALL sound_buzz	;37542
-  ELSE
-    nop
-	nop
-	nop
-  ENDIF
-
-  POP BC
-  RET
 
 ; Data block at 36233
   DEFB 201		; ??? not used RET ???
 
-; Routine at 36234
-;
-  LD A,(BC)
-  INC BC
-  CP 136
-  JR NZ,36241
 
-  INC D
-  CP 137
-  JR NZ,36246
-
-  INC D
-  CP 128
-  RET NZ
-
-  INC D
-
-  RET
-
-
+  include "/code/8D8A-8D9A__check_passage.asm"
   include "/code/8D9B-8E0E__show_status.asm"
   include "/code/8E0F-8E43__show_auto_bomb.asm"
 

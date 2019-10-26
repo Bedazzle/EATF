@@ -119,14 +119,12 @@ L33718:
 
 show_gold_exit:
   LD BC, PLAYFIELD + 7*32 + 16	; x=16, y=7
-  LD A,10			; GOLD 10-11, 25-26
+  LD A,10			; GOLD 10-11, 26-27
   CALL put_object
   
   LD BC, PLAYFIELD + 7*32 + 24	; x=24, y=7
-  LD A,14			; EXIT 14-15, 29-30
-					; BOMB 96-97, 111-112
-  ;ld a, 128
-  ;ld a, 136
+  LD A,14			; EXIT 14-15, 30-31
+					; BOMB 96-97, 112-113
   CALL put_object
 
   JP menu_loop

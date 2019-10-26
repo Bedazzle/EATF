@@ -1,14 +1,14 @@
 CL_BRIGHT	EQU %01000000
 CL_FLASH	EQU %10000000
 
-CL_BLK EQU 0	; black
-CL_BLU EQU 1	; blue
-CL_RED EQU 2	; red
-CL_MGN EQU 3	; magenta
-CL_GRN EQU 4	; green
-CL_SKY EQU 5	; skyblue
-CL_YEL EQU 6	; yellow
-CL_WHT EQU 7	; white
+CL_BLK EQU 0	; black		000
+CL_BLU EQU 1	; blue		001
+CL_RED EQU 2	; red		010
+CL_MGN EQU 3	; magenta	011
+CL_GRN EQU 4	; green		100
+CL_SKY EQU 5	; skyblue	101
+CL_YEL EQU 6	; yellow	110
+CL_WHT EQU 7	; white		111
 
 PAP_BLK	EQU CL_BLK << 3
 PAP_BLU	EQU CL_BLU << 3

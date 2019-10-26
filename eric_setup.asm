@@ -5,10 +5,6 @@ SCR_ATTR	EQU $5800	; 22528
 BUFFER_SIZE	EQU 768
 MASK_INT	EQU 56
 
-block_1		EQU $9BC6	; 39878 SCOREBONUS
-block_2		EQU $9C28	; 39976
-;block_3		EQU $92C2	;37570
-
 ERICS_NUMB	EQU 3
 WALLS_NUMB	EQU 35
 FREE_AROUND	EQU 2	; empty space around Eric
@@ -130,6 +126,7 @@ FIELD		EQU $FD00	; 64768
 	;DEFINE FREEZE_FLOAT	; Stop floaters move
 	;DEFINE ANGRY_FLOAT	; Floaters chase Eric
 	;DEFINE NO_CLEAR	; Turn off playfield clear on zero time
+	;DEFINE WALKTHROUGH	; Eric can walk through walls	
 	DEFINE SOUND_EXPLOSION
 	DEFINE SOUND_GOLD
 	DEFINE SOUND_SCORE
