@@ -3,7 +3,7 @@ show_auto_bomb:
   AND 3
   RET NZ		; each 4th stage have bomb auto setting
  
-  LD BC,PLAYFIELD + 768-31
+  LD BC,PLAYFIELD + 768-31	; last line of screen
 
   LD A,(BLINK_SHOW)
   OR A

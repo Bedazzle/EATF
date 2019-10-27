@@ -1,4 +1,4 @@
-DUMMYCALL	EQU 148	; ROM RET
+ROMRET		EQU 148	; ROM RET
 
 SCR_ATTR	EQU $5800	; 22528
 
@@ -61,10 +61,10 @@ FLOATERS	EQU $C01E	; 49182
 FLIP_FLOAT	EQU $C05A	; 49242
 ;---------------------
 BOMBS		EQU $C05B	; 49243		5 bombs x 4 byte
-;+0 BOMB_ACTIVE
-;+1 X
-;+2 Y
-;+3 FUSE_GAP
+BOMB_ACTIVE	EQU 0		; BOMB_ACTIVE
+BOMB_X		EQU 1		; X
+BOMB_Y		EQU 2		; Y
+FUSE_GAP	EQU 3		; FUSE_GAP
 
 BOMBS_TERM	EQU $C06F	; 49263	bomb array terminator
 
@@ -127,6 +127,7 @@ FIELD		EQU $FD00	; 64768
 	;DEFINE ANGRY_FLOAT	; Floaters chase Eric
 	;DEFINE NO_CLEAR	; Turn off playfield clear on zero time
 	;DEFINE WALKTHROUGH	; Eric can walk through walls	
+	;DEFINE SMALLRANGE	; short explosion range
 	DEFINE SOUND_EXPLOSION
 	DEFINE SOUND_GOLD
 	DEFINE SOUND_SCORE

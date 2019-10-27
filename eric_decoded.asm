@@ -8,180 +8,7 @@
 STARTGAME:
   INCLUDE "/code/8000-8014__start_game.asm"
   INCLUDE "/code/8015-8046__play_melody.asm"
-
-  
-game_play:
-  LD HL,0
-  LD (SCORE),HL
-  LD A,START_FLOAT
-  LD (FLOATS_NUM),A
-  LD A,ERICS_NUMB
-  LD (ERICS_LEFT),A
-
-  CALL clear_playfield
-  CALL repaint_buffer
-
-  LD HL,SCOREBONUS
-  CALL deblocker
-
-  LD HL,ERICDEATH
-  CALL deblocker
-
-level_start:
-  LD HL,START_TIME
-  LD (BONUS_TIME),HL
-
-  XOR A
-  LD (NEED_CLEAR),A
-  LD (ALL_KILLED),A
-  LD (GOLD_CHEST),A
-  LD (EXIT_DOOR),A
-  LD (EXTRA_DONE),A
-  LD (NEED_EXTRA),A
-  LD (GOLD_USED),A
-  LD (EXIT_USED),A
-  LD (LEVEL_EXIT),A
-  LD (ERIC_DEAD),A
-
-  LD A,1
-  LD (ERIC_FRAME),A
-
-  CALL level_settings
-  CALL reset_floaters
-  CALL spawn_floaters
-  CALL reset_bombs
-  CALL clear_playfield
-  CALL repaint_buffer
-  CALL reset_buffer
-  CALL prepare_field	
-  CALL random_objects
-
-  XOR A
-  LD (GOLD_CHEST),A
-  LD (EXIT_DOOR),A
-
-play_loop:
-  CALL increase_delays
-  CALL copy_buffer
-  CALL prepare_field
-  CALL animate_bombs
-  CALL process_bombs
-  CALL drop_bomb
-  CALL process_eric
-  CALL animate_floater
-  CALL show_gold
-  CALL show_exit
-  CALL process_floats
-  CALL pick_gold
-  CALL pick_exit
-  CALL show_eric
-  CALL extra_floaters
-  CALL exit_door_check
-  CALL process_time
-  CALL show_status
-  CALL show_auto_bomb
-
-  LD A,(ERIC_DEAD)
-  OR A
-  JP NZ,minus_life
-
-  LD A,(LEVEL_EXIT)
-  OR A
-  JP NZ,do_level_exit
-
-  LD A,(ALL_KILLED)
-  OR A
-  JR Z,play_loop
-
-  LD BC,20
-process_loop:
-  PUSH BC
-
-  CALL process_full
-
-  POP BC
-  DEC BC
-  LD A,B
-  OR C
-  JP NZ,process_loop
-
-  LD HL,(BONUS_TIME)
-  LD A,H
-  OR L
-  JR Z,no_bonus
-
-decrease_time:
-  PUSH HL
-
-  CALL process_short
-
-  LD HL,SNDFX_2	;33139
-  LD (SOUND_2),HL
-  POP HL
-
-  LD BC,BONUS_DECR
-  OR A
-  SBC HL,BC
-  LD (BONUS_TIME),HL
-
-  LD DE,(SCORE)
-  INC DE
-  LD (SCORE),DE
-  LD A,H
-  OR L
-  JP NZ,decrease_time	; optimize to JR
-
-  CALL process_short
-  CALL process_short
-
-no_bonus:
-  LD A,(FLOATS_NUM)
-  INC A
-  LD (FLOATS_NUM),A
-
-  PUSH AF
-  AND 3
-
-  LD HL,extra_sprites_1
-
-  CALL Z,switch_extra
-
-  POP AF
-  AND 252		; %1111 1100
-  JP Z,level_start
-
-  AND 12			; %0000 1100
-  LD C,A
-  LD B,0
-  ADD HL,BC
-
-  LD E,(HL)
-  INC HL
-  LD D,(HL)
-  INC HL
-
-  PUSH HL
-  EX DE,HL
-
-  CALL deblocker
-
-  POP HL
-
-  LD E,(HL)
-  INC HL
-  LD D,(HL)
-
-  EX DE,HL
-
-  CALL deblocker
-
-  JP level_start
-
-switch_extra:
-  LD HL,extra_sprites_2
-  RET
-
-
+  INCLUDE "/code/8047-8172__game_play.asm"
   include "/data/8173-8180__sound_score.asm"
 
 
@@ -217,33 +44,7 @@ extra_sprites_2:
   include "/code/81D7-81E6__minus_life.asm"
   include "/code/81E7-820C__level_settings.asm"
   include "/code/820D-821C__no_erics_left.asm"
-
-
-process_full:
-  CALL increase_delays
-  CALL copy_buffer
-  CALL prepare_field
-  CALL process_bombs
-  CALL show_gold
-  CALL show_exit
-  CALL process_floats
-  CALL 35949
-  CALL animate_bombs
-  CALL show_status
-  RET
-
-
-process_short:
-  CALL increase_delays
-  CALL copy_buffer
-  CALL prepare_field
-  CALL show_gold
-  CALL show_exit
-  CALL 35949
-  CALL show_status
-  RET
-
-
+  include "/code/821D-8251__process_full+short.asm"
   include "/code/8252-82A3__input_select.asm"
   include "/code/82A4-84DD__main_menu.asm"
   include "/code/84DE-84F1__set_menu_bomb.asm"
@@ -293,294 +94,7 @@ FLO_MOVE:
   include "/code/89F9-8A54__animate_bombs.asm"
   include "/data/8A55-8ADB__sound_explosion.asm"
 
-  
-; Routine at 35548
-;
-process_bombs:
-  LD IX,BOMBS
-loop_bombs:
-  LD A,(IX+0)
-  INC A
-  RET Z
-
-  DEC A
-  JR Z,35642
-  CP 13
-  JR Z,35662
-  CP 5
-  JR C,35576
-  ADD A,A
-  ADD A,214
-  EXX
-  LD D,A
-  EXX
-  JR 35680
-  DEC A
-  ADD A,A
-  ADD A,A
-  LD D,A
-  LD A,(FLIP_BOMB)
-  ADD A,D
-  ADD A,96
-  LD D,A
-  EXX
-  LD D,A
-  EXX
-  LD A,(IX+1)
-  LD C,A
-  EXX
-  LD C,A
-  EXX
-  LD A,(IX+2)
-  LD B,A
-  EXX
-  LD B,A
-  EXX
-  CALL get_field_addr
-  CALL loc_35649
-  INC BC
-  INC D
-  CALL loc_35649
-  LD HL,31
-  ADD HL,BC
-  LD B,H
-  LD C,L
-  LD A,15
-  ADD A,D
-  LD D,A
-  CALL loc_35649
-  INC BC
-  INC D
-  CALL loc_35649
-  EXX
-  CALL calc_buff_addr
-  LD A,D
-  CALL put_object
-  EXX
-
-;L_35642:
-loc_8B3A:
-  LD BC,4
-  ADD IX,BC
-  JR loop_bombs
-
-; Routine at 35649
-;
-loc_35649:
-  LD A,(BC)
-  CP 224
-  RET C
-  LD (IX+0),4	; bomb active
-  LD (IX+3),6	; fuse gap
-  
-  RET
-  
-  
-
-
-; Routine at 35662
-;
-  LD A,(IX+1)
-  LD C,A
-  LD A,(IX+2)
-  LD B,A
-  CALL get_field_addr
-
-  LD A,32
-  CALL put_4x_block	;35936
-  JR loc_8B3A		;L_35642	;35642
-
-; Routine at 35680
-;
-  LD C,(IX+1)
-  LD B,(IX+2)
-  CALL get_field_addr
-  EXX
-  LD A,D
-  EXX
-  CALL put_object
-  EXX
-  LD A,D
-  EXX
-  INC A
-  INC A
-  CP 240
-  JR C,35706
-
-  LD A,32
-  EXX
-  LD E,A
-  EXX
-
-  LD HL,l_36902
-loc_8B80:
-  LD A,(HL)
-  OR A
-  JR Z,loc_8B88		;35720
-
-  ADD A,A
-  OR A
-  JR Z,loc_8B3A		;35642
-
-loc_8B88:
-  LD A,(HL)
-  INC HL
-  ADD A,(IX+2)	; bomb y
-  LD B,A
-  LD A,(HL)
-  INC HL
-  ADD A,(IX+1)	; bomb x
-  LD C,A
-  CALL sub_8BF5		;35829
-  CP 136
-  JR NZ,loc_8BA9		;35753
-  JR loc_8BA1		;35745
-
-; Data block at 35741
-  DEFB 254,137,32,8		; previous JR can be removed, if these 4 bytes are placed in different location
-
-; Routine at 35745
-;
-loc_8BA1:
-  INC HL
-  INC HL
-  INC HL
-  INC HL
-  INC HL
-  INC HL
-  JR loc_8B80
-
-; Routine at 35753
-;
-loc_8BA9:
-  LD A,(HL)
-  INC HL
-  ADD A,(IX+2)
-  LD B,A
-  LD A,(HL)
-  INC HL
-  ADD A,(IX+1)
-  LD C,A
-  CALL sub_8BF5		;35829
-  CP 128
-  JR C,35782
-
-  CP 138
-  JR NC,35782
-
-  INC HL
-  INC HL
-  INC HL
-  INC HL
-  JR loc_8B80
-
-  LD A,(HL)
-  INC HL
-  ADD A,(IX+2)
-  LD B,A
-  LD A,(HL)
-  INC HL
-  ADD A,(IX+1)
-  LD C,A
-  CALL 35886
-  EX AF,AF'
-  CP 128
-  JR C,35811
-  CP 138
-  JR NC,35811
-  EX AF,AF'
-  INC HL
-  INC HL
-  JR loc_8B80
-
-  EX AF,AF'
-  LD A,(HL)
-  INC HL
-  ADD A,(IX+2)
-  LD B,A
-  LD A,(HL)
-  INC HL
-  ADD A,(IX+1)
-  LD C,A
-  CALL 35886
-  JR loc_8B80
-
-; Routine at 35829
-;
-sub_8BF5:
-  PUSH BC
-  CALL calc_buff_addr
-  LD A,(BC)
-  POP BC
-  CP 136
-  RET Z
-  CP 137
-  RET Z
-  CALL get_field_addr
-  LD A,(BC)
-  CP 136
-  RET Z
-  CP 128
-  JR C,loc_8C12		;35858
-  CP 138
-  JR NC,loc_8C12		;35858
-  JR loc_8C17		;35863
-
-loc_8C12:
-  EXX
-  LD A,E
-  EXX
-  JR loc_8C20		;35872
-
-loc_8C17:
-  CALL 35874
-  CP 136
-  JR NZ,loc_8C20		;35872
-
-  LD A,32
-loc_8C20:
-  LD (BC),A
-  RET
-
-; Routine at 35874
-;
-  PUSH AF
-  EX (SP),HL
-  LD A,(FUSE_DELAY)
-  OR A
-  JR NZ,L_35883
-  INC H
-L_35883:
-  EX (SP),HL
-  POP AF
-  RET
-
-; Routine at 35886
-;
-  PUSH BC
-  CALL calc_buff_addr
-  LD A,(BC)
-  EX AF,AF'
-  LD A,(BC)
-  EX AF,AF'
-  POP BC
-  CP 136
-  RET Z
-  CP 137
-  RET Z
-  CALL get_field_addr
-  LD A,(BC)
-  CP 138
-  JR NC,35914
-  CP 128
-  JR C,35914
-  RET
-  EXX
-  LD A,E
-  EXX
-  LD (BC),A
-  RET
-
+  include "/code/8ADC-8C4E__process_bombs.asm"
 
   include "/code/8C4F-8C5F__put_object.asm"
   include "/code/8C60-8C6C__put_4x_block.asm"
@@ -607,10 +121,11 @@ ERIC_MOVE:
 
 
 TXT_AUTO:
-  DEFB 32,32,21,22,150,21,32,149		; "  BOMB A"
-  DEFB 24,48,22,32,16,20,48,48		; "UTO SETT"
-  DEFB 151,23,49,32,16,48,149,49		; "ING STAG"
-  DEFB 20,32							; "E "
+  DEFB 32,32						; "  "
+  DEFB 21,22,150,21,32		; 	; "BOMB "
+  DEFB 149,24,48,22,32			; "AUTO "
+  DEFB 16,20,48,48,151,23,49,32	; "SETTING "
+  DEFB 16,48,149,49,20,32		; "STAGE "
   DEFB 0
   
 
@@ -636,17 +151,20 @@ SOME_TABLE:
   DEFB 19,29
  
   DEFB 255
-  
+
+  ; ??? not used start
+x_8F83:		; 36739
   CALL get_field_addr
   LD A, 32
-  CALL put_4x_block	;35936
+  CALL put_4x_block
   RET
+  ; ??? not used end
 
 
   include "/code/8F8C-8FAB__random.asm"
 
-  
-; block at 36780
+  ; block at 36780
+  ; ??? not used start
 l_36780:
   cp      10
   jr      c, loc_8FBA
@@ -658,6 +176,7 @@ l_36780:
 loc_8FBA:
   ld      (bc), a
   ret
+  ; ??? not used end
 
 
   include "/code/8FBC-8FC1__fill_by_byte.asm"
@@ -669,7 +188,7 @@ loc_8FBA:
 
 
   ; block at 36893
-  ; ??? not used ???
+  ; ??? not used start
 pause_400:
   LD HL,$400
 pause_400_loop:
@@ -678,21 +197,57 @@ pause_400_loop:
   OR L
   JR NZ,pause_400_loop
   RET
-  ; ??? not used ???
+  ; ??? not used end
 
-l_36902:  
-  DEFB 0,255,0,254,0,253,0,252
-  DEFB 1,255,1,254,1,253,1,252
-  DEFB 0,2,0,3,0,4,0,5
-  DEFB 1,2,1,3,1,4,1,5
-  DEFB 255,0,254,0,253,0,252,0
-  DEFB 255,1,254,1,253,1,252,1
-  DEFB 2,0,3,0,4,0,5,0
-  DEFB 2,1,3,1,4,1,5,1
+DEATH_CROSS:
+  ; left ray
+  DEFB 0, -1	; BOMB_Y/X
+  DEFB 0, -2	;
+  DEFB 0, -3;
+  DEFB 0, -4
+  
+  DEFB 1, -1
+  DEFB 1, -2
+  DEFB 1, -3
+  DEFB 1, -4
+  
+  ; right ray
+  DEFB 0,2
+  DEFB 0,3
+  DEFB 0,4
+  DEFB 0,5
+  
+  DEFB 1,2
+  DEFB 1,3
+  DEFB 1,4
+  DEFB 1,5
+  
+  ; upper ray
+  DEFB 255,0
+  DEFB 254,0
+  DEFB 253,0
+  DEFB 252,0
+  
+  DEFB 255,1
+  DEFB 254,1
+  DEFB 253,1
+  DEFB 252,1
 
+  ; lower ray
+  DEFB 2,0
+  DEFB 3,0
+  DEFB 4,0
+  DEFB 5,0
+  
+  DEFB 2,1
+  DEFB 3,1
+  DEFB 4,1
+  DEFB 5,1
+
+  ; cross abort
   DEFB 128,128,128,128
 
-
+  
   include "/code/906A-9075__init_variables.asm"
   include "/data/9076-90FC__VAR_SETUP.asm"
   include "/code/90FD-9113__first_run.asm"

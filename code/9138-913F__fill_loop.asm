@@ -3,6 +3,8 @@ fill_loop:
   INC HL
   OR A
   RET Z
+
   LD (BC),A
   INC BC
+
   JR fill_loop

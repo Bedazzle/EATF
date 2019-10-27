@@ -9,11 +9,15 @@ from PIL import ImageDraw
 BASE = '..\\'
 SOURCE = 'eric_decoded.bin'
 TARGET = 'eric_decoded.png'
-
 ADR = 32768
 
+#SOURCE = 'bomberman.bin'
+#TARGET = 'bomberman.png'
+#ADR = 16384
+
+
 IMAGE_WIDTH = 400
-IMAGE_HEIGHT = 1050
+IMAGE_HEIGHT = 2100
 
 
 class zxbin(object):
@@ -132,7 +136,7 @@ with zxbin(BASE+SOURCE, ADR) as eric:
 
         # ------------------------                
         sprites = [
-            {'adr': 37574, 'count': 130, 'x': 5, 'y': 1}
+            {'adr': 37574, 'count': 256, 'x': 5, 'y': 1}
             ,
             {'adr': 39882, 'count': 10, 'x': 200, 'y': 1}
         ]
@@ -229,6 +233,22 @@ with zxbin(BASE+SOURCE, ADR) as eric:
         # ------------------------                
         sprites = [
             {'adr': 37880, 'count': 7, 'x': 300, 'y': 1}
+			,
+            {'adr': 39590, 'count': 8, 'x': 300, 'y': 200}
+			,
+            {'adr': 38438, 'count': 8, 'x': 300, 'y': 350}
+			,
+            {'adr': 39998, 'count': 7, 'x': 300, 'y': 500}
+			,
+            {'adr': 40268, 'count': 8, 'x': 300, 'y': 650}
+			,
+            {'adr': 39302, 'count': 8, 'x': 300, 'y': 800}
+			,
+            {'adr': 39014, 'count': 8, 'x': 200, 'y': 650}
+			,
+            {'adr': 38816, 'count': 3, 'x': 200, 'y': 800}
+			,
+            {'adr': 37664, 'count': 3, 'x': 200, 'y': 900}
         ]
 
         for sprite in sprites:
@@ -237,8 +257,6 @@ with zxbin(BASE+SOURCE, ADR) as eric:
             adr = sprite['adr']
             
             for num in range(sprite['count']):
-                print(adr)
-
                 txt = '{}: {} / {}'.format(num, adr, format(adr, '02x'))
 
                 draw.text((x+20, y-1), txt, (255,255,255), font=font)
@@ -269,6 +287,45 @@ with zxbin(BASE+SOURCE, ADR) as eric:
                     
                 adr = backup + 9*2
         # ------------------------                
+
+
+# bomberman
+#        # ------------------------                
+#        sprites = [
+#            {'adr': 37350, 'count': 128, 'x': 100, 'y': 1}
+#			,
+#            {'adr': 39658, 'count': 5, 'x': 200, 'y': 1}
+#        ]
+#        
+#        for sprite in sprites:
+#            x = sprite['x']
+#            y = sprite['y']
+#            adr = sprite['adr']
+#            
+#            for num in range(sprite['count']):
+#                txt = '{}: {} / {}'.format(num, adr, format(adr, '02x'))
+#
+#                draw.text((x+20, y-1), txt, (255,255,255), font=font)
+#
+#                for pair in range(2):
+#                    eric.set_color(eric.get_byte(adr+8))
+#                    
+#                    for src_addr in range(adr, adr+8):
+#                        data = eric.byte_to_colors(eric.get_byte(src_addr))
+#                        
+#                        for inx, clr in enumerate(data):
+#                            new_im.putpixel((x+inx, y), clr)
+#                        
+#                        y += 1
+#                        
+#                    y -= 8
+#                    x += 8
+#        
+#                    adr += 9
+#                
+#                y += 8
+#                x -= 16
+#        # ------------------------                
 
 
 
