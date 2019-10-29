@@ -14,7 +14,7 @@ animate_floater:
 
   LD IX,FLOATERS
 next_floater:
-  LD A,(IX+0)
+  LD A,(IX+FLOATER_ALIVE)
   INC A
   RET Z
 
@@ -22,37 +22,37 @@ next_floater:
   CP 1
   JP NZ,inc_floater
 
-  LD A,(IX+4)	; speed
+  LD A,(IX+FLOATER_SPEED)
   DEC A
   LD D,A
   CP 255
   JR NZ,set_speed
 
-  LD A,(IX+3)	; angry time
+  LD A,(IX+FLOATER_ANGRY)
   DEC A
   CP 255
   JR NZ,set_angry
 
   LD A,3
 set_angry:
-  LD (IX+3),A
+  LD (IX+FLOATER_ANGRY),A
 
   LD A,(LEVEL_SPEED)
   LD D,A
 set_speed:
   LD A,D
-  LD (IX+4),A
+  LD (IX+FLOATER_SPEED),A
 
-  LD A,(IX+3)
+  LD A,(IX+FLOATER_ANGRY)
   OR A
-  JR Z,loc_87AC
+  JR Z,set_angry_speed
 
   LD A,(FLOA_DELAY)
   AND 3
   JP NZ,inc_floater
   
-loc_87AC:
-  LD A,(IX+3)
+set_angry_speed:
+  LD A,(IX+FLOATER_ANGRY)
   OR A
   IFNDEF ANGRY_FLOAT
 	JR Z,collide_eric
@@ -60,7 +60,7 @@ loc_87AC:
 	jr collide_eric
   ENDIF
 
-  LD A,(IX+4)
+  LD A,(IX+FLOATER_SPEED)
   AND 15
   OR A
   JR Z,collide_eric
@@ -83,7 +83,7 @@ floater_2:
   CALL random
 
   AND 3
-  LD (IX+5),A	; vector
+  LD (IX+FLOATER_VECTR),A
 
   CALL float_test_xy	
 
@@ -99,7 +99,7 @@ floater_3:
   CALL random
 
   AND 3
-  LD (IX+5),A
+  LD (IX+FLOATER_VECTR),A
 
   CALL float_test_xy	
 
@@ -114,17 +114,17 @@ floater_3:
 collide_eric:
   LD A,(ERIC_X)
   LD B,A
-  LD A,(IX+1)	; floater_x
+  LD A,(IX+FLOATER_X)
   CP B
   JR Z,chase_to_y	; same X
   JR NC,chase_left	; floater at right
 
 chase_right:
-  LD (IX+5),1
+  LD (IX+FLOATER_VECTR),1
   JR chase_horz
 
 chase_left:
-  LD (IX+5),0
+  LD (IX+FLOATER_VECTR),0
 chase_horz:
   CALL float_test_xy	
 
@@ -134,17 +134,17 @@ chase_horz:
 chase_to_y:
   LD A,(ERIC_Y)
   LD B,A
-  LD A,(IX+2)	; floater_y
+  LD A,(IX+FLOATER_Y)
   CP B
   JR Z,inc_floater	; same y
   JR NC,chase_up		; floater at bottom
 
 chase_down:
-  LD (IX+5),3
+  LD (IX+FLOATER_VECTR),3
   JR chase_vert
 
 chase_up:
-  LD (IX+5),2
+  LD (IX+FLOATER_VECTR),2
 chase_vert:
   CALL float_test_xy	
 

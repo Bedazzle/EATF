@@ -45,7 +45,6 @@ show_eric_spr:
   LD C,A
 
   CALL calc_buff_addr
-
   CALL change_eric_spr
   CALL change_eric_spr
 
@@ -72,9 +71,11 @@ change_eric_spr:
   LD A,D
   CP 192
   RET C
+
   LD A,(ERIC_FRAME)
   CP 6
   RET NC
+
   LD A,6
   IFNDEF IMMUNE_ERIC
 	LD (ERIC_FRAME),A

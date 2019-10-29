@@ -5,7 +5,7 @@ animate_bombs:
 
   LD IX,BOMBS
 anim_bomb:
-  LD A,(IX+0)
+  LD A,(IX+BOMB_ACTIVE)
   INC A
   RET Z
 
@@ -16,25 +16,25 @@ anim_bomb:
   JR NC,explode	
 
 change_fuse:
-  LD A,(IX+3)
+  LD A,(IX+FUSE_GAP)
   INC A
-  LD (IX+3),A
+  LD (IX+FUSE_GAP),A
   CP 7
   JR NZ,anim_next_bomb
 
 explode:
   XOR A
-  LD (IX+3),A
+  LD (IX+FUSE_GAP),A
   LD A,(FUSE_DELAY)
   OR A
   JR NZ,anim_next_bomb
 
-  LD A,(IX+0)
+  LD A,(IX+BOMB_ACTIVE)
   INC A
   CP 14
   JR Z,remove_bomb
 
-  LD (IX+0),A
+  LD (IX+BOMB_ACTIVE),A
   CP 5
   JR C,anim_next_bomb
 
@@ -49,7 +49,7 @@ explode:
 
 remove_bomb:
   XOR A
-  LD (IX+0),A
+  LD (IX+BOMB_ACTIVE),A
 anim_next_bomb:
   LD BC,4
   ADD IX,BC

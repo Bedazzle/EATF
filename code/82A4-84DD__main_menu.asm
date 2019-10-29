@@ -1,7 +1,9 @@
 main_menu:
   CALL clear_playfield
-  CALL repaint_buffer	;37212
-  LD HL,block_3			;37570	DE=0  BC=900
+  CALL repaint_buffer
+
+  LD HL,block_3
+
   CALL deblocker
   CALL set_menu_float
   CALL set_menu_bomb
@@ -13,12 +15,13 @@ menu_loop:
 
   LD HL,KEY_CHECK
   CP (HL)
+
   CALL NZ,input_select
   CALL increase_delays
 
   LD BC,PLAYFIELD
   LD D,16 * 12	;x * y = 192
-  LD E,137	; BRICK	sprite $89
+  LD E,137	; BRICK	sprite
 menu_fill:
   LD A,E
   LD (BC),A

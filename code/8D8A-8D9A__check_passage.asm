@@ -10,19 +10,19 @@ check_passage:
 	ret
   ENDIF
 
-  CP 136			; ???
+  CP 136				; border wall
   JR NZ,check_concrete
   
   INC D
 
 check_concrete:
-  CP 137			; concrete
+  CP 137				; concrete wall
   JR NZ,check_brick	
 
   INC D
 
 check_brick:
-  CP 128			; brick
+  CP 128				; brick wall
   RET NZ
 
   INC D

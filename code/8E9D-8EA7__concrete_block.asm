@@ -7,4 +7,5 @@ concrete_block:
   LD (HL),A	; bottom left
   INC HL
   LD (HL),A	; bottom right
+
   RET

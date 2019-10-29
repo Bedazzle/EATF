@@ -20,7 +20,7 @@ boom_sprites:
   EXX
   LD D,A
   EXX
-  JR loc_8B60		;35680
+  JR do_death_cross
 
 fuse_sprites:
   DEC A
@@ -115,9 +115,7 @@ del_bomb_sprite:
 
 
 
-; Routine at 35680
-;
-loc_8B60:
+do_death_cross:
   LD C,(IX+BOMB_X)
   LD B,(IX+BOMB_Y)
 
@@ -135,27 +133,28 @@ loc_8B60:
   INC A
   INC A
   CP 240
-  JR C,loc_8B7A
+  JR C,blank_cross
 
   LD A,32
-loc_8B7A:
+blank_cross:
   EXX
   LD E,A
   EXX
 
   LD HL,DEATH_CROSS
-cross_explode:	;loc_8B80:
+cross_explode:
   LD A,(HL)
   OR A
-  JR Z,loc_8B88
+  JR Z,do_near_cross
 
+check_cross_end:
   ADD A,A		; 128 + 128 = 256 = 0
   OR A
   JR Z,proc_next_bomb
 
   
   ; ----------
-loc_8B88:
+do_near_cross:
   LD A,(HL)
   INC HL
   ADD A,(IX+BOMB_Y)
@@ -167,18 +166,16 @@ loc_8B88:
 
   CALL sub_8BF5
 
-  CP 136
-  JR NZ,loc_8BA9
-  JR loc_8BA1
+  CP 136					; border wall
+  JR NZ,do_far_cross
+  JR skip_two_blocks
 
   ; ??? not used start
 ; Data block at 35741
   DEFB 254,137,32,8		; previous JR can be removed, if these 4 bytes are placed in different location
   ; ??? not used end
 
-; Routine at 35745
-;
-loc_8BA1:
+skip_two_blocks:
   INC HL
   INC HL
 increment:
@@ -192,7 +189,7 @@ increment:
   
   
   ; ----------
-loc_8BA9:
+do_far_cross:
   LD A,(HL)
   INC HL
   ADD A,(IX+BOMB_Y)
@@ -204,12 +201,13 @@ loc_8BA9:
 
   CALL sub_8BF5
 
-  CP 128
+  CP 128					; brick wall
   JR C,loc_8BC6
 
-  CP 138
+  CP 138					; Eric
   JR NC,loc_8BC6
 
+skip_one_block:
   INC HL				; optimize by JR increment 
   INC HL
   INC HL
@@ -242,6 +240,8 @@ loc_8BC6:
   INC HL
   INC HL
   JR cross_explode
+  ; ----------
+
 
 loc_8BE3:
   EX AF,AF'
@@ -257,6 +257,7 @@ loc_8BE3:
   CALL sub_8C2E
 
   JR cross_explode
+  ; ----------
 
 
 

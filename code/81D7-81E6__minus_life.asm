@@ -1,5 +1,5 @@
 minus_life:
-  CALL death_pause	;36884
+  CALL death_pause
 
   LD A,(ERICS_LEFT)
 

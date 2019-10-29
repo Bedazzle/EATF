@@ -15,7 +15,7 @@ drop_bomb:
 find_free_bomb:
   LD IX,BOMBS
 process_bomb:
-  LD A,(IX+0)
+  LD A,(IX+FLOATER_ALIVE)
   INC A
   RET Z
 
@@ -24,8 +24,8 @@ process_bomb:
   JR NZ,bomb_next
 
   LD BC,(ERIC_X)		; C=x, B=y
-  LD (IX+1),C
-  LD (IX+2),B
+  LD (IX+FLOATER_X),C
+  LD (IX+FLOATER_Y),B
 
   CALL get_field_addr
 
@@ -64,9 +64,9 @@ process_bomb:
   CALL put_object
 
   LD A,1
-  LD (IX+0),A
+  LD (IX+FLOATER_ALIVE),A
   XOR A
-  LD (IX+3),A
+  LD (IX+FLOATER_ANGRY),A
   LD (ERIC_FRAME),A
 
   RET

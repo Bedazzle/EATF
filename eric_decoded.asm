@@ -223,15 +223,15 @@ DEATH_CROSS:
   DEFB 1,5
   
   ; upper ray
-  DEFB 255,0
-  DEFB 254,0
-  DEFB 253,0
-  DEFB 252,0
+  DEFB -1,0
+  DEFB -2,0
+  DEFB -3,0
+  DEFB -4,0
   
-  DEFB 255,1
-  DEFB 254,1
-  DEFB 253,1
-  DEFB 252,1
+  DEFB -1,1
+  DEFB -2,1
+  DEFB -3,1
+  DEFB -4,1
 
   ; lower ray
   DEFB 2,0
@@ -244,7 +244,7 @@ DEATH_CROSS:
   DEFB 4,1
   DEFB 5,1
 
-  ; cross abort
+  ; cross end
   DEFB 128,128,128,128
 
   

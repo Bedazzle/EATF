@@ -11,11 +11,13 @@ process_eric:
   JR Z,kill_eric
 
   LD HL,ERIC_DEATH
+
   CALL safe_increment
 
   LD A,(ERIC_DEATH)
   OR A
   RET NZ
+
   LD A,(ERIC_FRAME)
   INC A
   LD (ERIC_FRAME),A
@@ -39,10 +41,12 @@ process_eric:
 kill_eric:
   LD A,1
   LD (ERIC_DEAD),A
+
   RET
 
 eric_alive:
   LD B,2
+
   CALL control_eric
 
   CP 5

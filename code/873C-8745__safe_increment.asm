@@ -3,7 +3,7 @@ safe_increment:
   INC A
   INC HL
   CP (HL)
-  JR C,no_reset	;34627
+  JR C,no_reset
 
   XOR A
 no_reset:

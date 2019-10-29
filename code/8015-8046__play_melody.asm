@@ -12,6 +12,7 @@ play_sound:
   LD A,(HL)
   OR A
   RET Z
+
 loop_sound:
   LD E,(HL)
   INC HL
@@ -21,11 +22,15 @@ loop_sound:
   INC HL
   LD B,(HL)
   INC HL
+
   CALL sound_buzz
+
   LD A,(HL)
   OR A
   JR NZ,loop_sound
+
   INC HL
   LD (IY+0),L
   LD (IY+1),H
+
   RET

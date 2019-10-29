@@ -12,8 +12,10 @@ extra_floaters:
   RET NZ
 
   LD BC,(FRACTION_X)
+
   CALL get_field_addr
   CALL not_empty
+
   CP ' '
   RET NZ
 
@@ -24,18 +26,21 @@ extra_floaters:
   LD IX,FLOATERS
   LD D,EXTRA_FLOAT
 process_floater:
-  LD A,(IX+0)
+  LD A,(IX+FLOATER_ALIVE)
   INC A
   JR Z,floaters_added
+
   DEC A
   JR NZ,add_float
-  LD (IX+0),1
+
+  LD (IX+FLOATER_ALIVE),1
   LD A,(FRACTION_X)
-  LD (IX+1),A
+  LD (IX+FLOATER_X),A
   LD A,(FRACTION_Y)
-  LD (IX+2),A
+  LD (IX+FLOATER_Y),A
   DEC D
   JR Z,floaters_added
+
 add_float:
   LD BC,7
   ADD IX,BC

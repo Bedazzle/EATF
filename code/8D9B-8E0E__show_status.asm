@@ -9,6 +9,7 @@ show_status:
 
 no_highscore:
   LD BC,PLAYFIELD + 1	;50061
+
   CALL fill_by_byte
   DEFB $20, $10, $11, $12, $13, $14, $21, $20	; " SCORE: "
   DEFB $00
@@ -20,7 +21,6 @@ no_highscore:
   DEFB $20, $20, $20, $15, $16, $17, $18, $19, $21, $20	; "   BONUS: "
   DEFB $00
 
-; Routine at 36301
   LD HL,(BONUS_TIME)
   CALL parse_digits
 
@@ -44,6 +44,7 @@ no_highscore:
   LD A,(ERICS_LEFT)
   LD (BC),A
   INC BC
+
   CALL fill_by_byte
   DEFB $20, $20, $20, $20, $20	; "     "
   DEFB $00

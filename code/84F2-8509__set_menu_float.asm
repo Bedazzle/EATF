@@ -1,8 +1,10 @@
 set_menu_float:
-  CALL reset_floaters	;34307
+  CALL reset_floaters
+
   LD IX,FLOATERS
-  LD (IX+0),1		; present
-  LD (IX+1),7		; x
-  LD (IX+2),7		; y
-  LD (IX+3),1		; rage
+  LD (IX+FLOATER_ALIVE),1		; present
+  LD (IX+FLOATER_X),7
+  LD (IX+FLOATER_Y),7
+  LD (IX+FLOATER_ANGRY),1
+
   RET

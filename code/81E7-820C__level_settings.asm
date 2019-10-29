@@ -16,6 +16,7 @@ float_num_ok:
   INC HL
   LD A,(HL)
   LD (LEVEL_SPEED),A
+
   RET
 
 LEVEL_FLOATERS:

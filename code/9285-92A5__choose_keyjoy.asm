@@ -1,13 +1,19 @@
 choose_keyjoy:
   CALL inkey
-  CP 'K'		;75
+
+  CP 'K'
   JR Z,disable_joy
-  CP 'J'		;74
+
+  CP 'J'
   JR Z,enable_joy
+
   CALL read_space_caps
+
   OR A
   JR NZ,disable_joy
+
   CALL read_keys_6_0
+
   OR A
   RET Z
   
@@ -16,6 +22,7 @@ enable_joy:
 set_keyjoy:
   LD (joy_enable),A
   LD A,255
+
   RET
 
 disable_joy:

@@ -1,7 +1,7 @@
 show_auto_bomb:
   LD A,(FLOATS_NUM)
   AND 3
-  RET NZ		; each 4th stage have bomb auto setting
+  RET NZ						; each 4th stage have bomb auto setting
  
   LD BC,PLAYFIELD + 768-31	; last line of screen
 

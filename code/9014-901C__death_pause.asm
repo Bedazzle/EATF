@@ -1,5 +1,5 @@
 death_pause:
-  LD HL,$5000	;20480
+  LD HL,$5000
 
 death_loop:
   DEC HL

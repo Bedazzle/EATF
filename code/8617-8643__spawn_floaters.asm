@@ -4,7 +4,9 @@ spawn_floaters:
   LD IX,FLOATERS
 rnd_floaters:
   LD HL,RESPAWN_PLACES
+
   CALL random
+
   AND 3
   ADD A,A
   ADD A,L
@@ -13,11 +15,11 @@ rnd_floaters:
   ADC A,H
   LD H,A
   LD A,(HL)
-  LD (IX+1),A
+  LD (IX+FLOATER_X),A
   INC HL
   LD A,(HL)
-  LD (IX+2),A
-  LD (IX+0),1
+  LD (IX+FLOATER_Y),A
+  LD (IX+FLOATER_ALIVE),1
  
   LD DE,7
   ADD IX,DE

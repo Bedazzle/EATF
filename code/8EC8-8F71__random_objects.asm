@@ -3,7 +3,7 @@ random_objects:
   ; setup Eric coords
   CALL random_coords
   LD A,C
-  LD (SOME_X),A	; x
+  LD (SOME_X),A
 
   CP 2
   JR C,random_objects
@@ -12,7 +12,7 @@ random_objects:
   JR NC,random_objects
 
   LD A,B
-  LD (SOME_Y),A	; y
+  LD (SOME_Y),A
 
   CP 2
   JR C,random_objects
@@ -23,10 +23,11 @@ random_objects:
   CALL mult_by_2
 
   PUSH BC
+
   CALL calc_buff_addr
 
   LD A,(BC)
-  CP 32		; is empty
+  CP 32				; is empty
   POP BC
   JR NZ,random_objects
 
@@ -130,7 +131,7 @@ setup_exit:
 
   CALL get_field_addr
 
-  LD A,128	; brick wall
+  LD A,128			; brick wall
   CALL put_4x_block
 
   EX AF,AF'
