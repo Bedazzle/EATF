@@ -1,9 +1,13 @@
+; Eric and the floaters
+; full disassembly
+; reversed in 2019
+
   device zxspectrum48
 
 	include "eric_macro.asm"
 	include "eric_setup.asm"
 
-	ORG 32768
+	ORG $8000	; 32768
 
 STARTGAME:
   INCLUDE "/code/8000-8014__start_game.asm"
@@ -15,13 +19,13 @@ STARTGAME:
 extra_sprites_1:
   DEFW m_gun_hi
   DEFW m_gun_lo
-  
+
   DEFW money_hi
   DEFW money_lo
 
   DEFW bicycle_hi
   DEFW bicycle_lo
-  
+
   DEFW car_hi
   DEFW car_lo
 
@@ -74,7 +78,6 @@ RESPAWN_PLACES:
   INCLUDE "/code/8854-8894__float_test_xy.asm"
 
 
-; Data block at 34965
 FLO_CHASE:
   DEFB 0,255,1,255	; to left
   DEFB 0,2,1,2		; to right
@@ -111,7 +114,6 @@ ERIC_MOVE:
   include "/code/8CDD-8D88__process_eric.asm"
 
 
-; Data block at 36233
   DEFB 201		; ??? not used RET ???
 
 
@@ -127,17 +129,16 @@ TXT_AUTO:
   DEFB 16,20,48,48,151,23,49,32	; "SETTING "
   DEFB 16,48,149,49,20,32		; "STAGE "
   DEFB 0
-  
+
 
   include "/code/8E5F-8E9C__prepare_field.asm"
   include "/code/8E9D-8EA7__concrete_block.asm"
   include "/code/8EA8-8EBC__random_coords.asm"
-  include "/code/8EBD-8EC7__mult_by_2.asm"
+  include "/code/8EBD-8EC7__double_b_c.asm"
   include "/code/8EC8-8F71__random_objects.asm"
 
 
-; Data block at 36722
-SOME_TABLE:
+WALLS_TABLE:
   DEFB 1,3
   DEFB 3,1
 
@@ -149,8 +150,9 @@ SOME_TABLE:
 
   DEFB 21,27
   DEFB 19,29
- 
-  DEFB 255
+
+  DEFB 255	; table exit
+
 
   ; ??? not used start
 x_8F83:		; 36739
@@ -162,6 +164,7 @@ x_8F83:		; 36739
 
 
   include "/code/8F8C-8FAB__random.asm"
+
 
   ; block at 36780
   ; ??? not used start
@@ -187,7 +190,6 @@ loc_8FBA:
   include "/code/9014-901C__death_pause.asm"
 
 
-  ; block at 36893
   ; ??? not used start
 pause_400:
   LD HL,$400
@@ -199,35 +201,36 @@ pause_400_loop:
   RET
   ; ??? not used end
 
+
 DEATH_CROSS:
   ; left ray
   DEFB 0, -1	; BOMB_Y/X
   DEFB 0, -2	;
   DEFB 0, -3;
   DEFB 0, -4
-  
+
   DEFB 1, -1
   DEFB 1, -2
   DEFB 1, -3
   DEFB 1, -4
-  
+
   ; right ray
   DEFB 0,2
   DEFB 0,3
   DEFB 0,4
   DEFB 0,5
-  
+
   DEFB 1,2
   DEFB 1,3
   DEFB 1,4
   DEFB 1,5
-  
+
   ; upper ray
   DEFB -1,0
   DEFB -2,0
   DEFB -3,0
   DEFB -4,0
-  
+
   DEFB -1,1
   DEFB -2,1
   DEFB -3,1
@@ -238,7 +241,7 @@ DEATH_CROSS:
   DEFB 3,0
   DEFB 4,0
   DEFB 5,0
-  
+
   DEFB 2,1
   DEFB 3,1
   DEFB 4,1
@@ -247,7 +250,7 @@ DEATH_CROSS:
   ; cross end
   DEFB 128,128,128,128
 
-  
+
   include "/code/906A-9075__init_variables.asm"
   include "/data/9076-90FC__VAR_SETUP.asm"
   include "/code/90FD-9113__first_run.asm"
@@ -258,21 +261,22 @@ DEATH_CROSS:
   INCLUDE "/code/915C-9181__repaint_buffer.asm"
   INCLUDE "/code/9182-91A2__repaint_cell.asm"
 
- 
-; Message at 37283
-DATA_37283:
+
+KEYS_KEYBOARD:
   DEFM "WIEODLC"
-  DEFB 14
+  DEFB 14		; Symbol Shift
   DEFM "XMZNAJQU"
 
 
-  INCLUDE "/code/91B3-925B__read_keyboard.asm"
+  INCLUDE "/code/91B3-91D8__read_keyboard.asm"
+  INCLUDE "/code/91D9-9222__control_eric.asm"
+  INCLUDE "/code/9223-925B__inkey.asm"
 
 
-; Data block at 37468
 key_mapping:
   DEFB 227		; $FEFE	; 1111 1110	; Caps Shift
   DEFM "ZXCV"
+
   DEFM "ASDFG"	; $FDFE	; 1111 1101
   DEFM "QWERT"	; $FBFE	; 1111 1011
   DEFM "12345"	; $F7FE	; 1111 0111
@@ -292,12 +296,26 @@ joy_enable:
 
   include "/code/9285-92A5__choose_keyjoy.asm"
   include "/code/92A6-92C1__sound_buzz.asm"
+  include "/data/eric_gfx_main.asm"
+  include "/data/eric_gfx_scorebonus.asm"
 
+; not used start
+	DB	0	; ........	9C24	39972
+	DB	0	; ........	9C25	39973
+	DB	9	; ....#..#	9C26	39974
+	DB	0	; ........	9C27	39975
+; not used end
 
-block_3:
-  DEFB 0,0,0,9
+  include "/data/eric_gfx_death.asm"
 
-  include "/data/eric_gfx.asm"
+; not used start
+	DB	0	; ........	9E6C	40556
+	DB	0	; ........	9E6D	40557
+	DB	9	; ....#..#	9E6E	40558
+	DB	0	; ........	9E6F	40559
+; not used end
+
+  include "/data/eric_gfx_extra.asm"
 
   include "/code/9FD0-9FDF__dexoring.asm"
 

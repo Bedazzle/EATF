@@ -4,22 +4,22 @@ SNDFX_4:
   ELSE
     DEFB 238,0,20,0
     DEFB 0
-    
+
     DEFB 212,0,20,0
     DEFB 0
-    
+
     DEFB 189,0,20,0
     DEFB 0
-    
+
     DEFB 178,0,20,0
     DEFB 0
-    
+
     DEFB 159,0,20,0
     DEFB 0
-    
+
     DEFB 142,0,20,0
     DEFB 0
-    
+
     DEFB 126,0,20,0
     DEFB 0
     DEFB 0

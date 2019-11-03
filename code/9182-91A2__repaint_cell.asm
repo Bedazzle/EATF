@@ -1,4 +1,4 @@
-repaint_cell:  
+repaint_cell:
   EXX
   PUSH DE
   LD E,A
@@ -22,8 +22,8 @@ draw_cell:
   LD (DE),A
   INC HL
   INC D
-  DJNZ draw_cell	
-  
+  DJNZ draw_cell
+
   LD D,C
   POP BC
   LD A,(HL)

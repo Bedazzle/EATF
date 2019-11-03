@@ -1,5 +1,5 @@
 check_for_goods:
-  
+
 exit_door_check:
   LD BC,(ERIC_X)		; C=x, B=y
   LD A,(EXIT_DOOR)

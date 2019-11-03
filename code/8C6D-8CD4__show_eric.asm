@@ -84,5 +84,5 @@ change_eric_spr:
 	nop
 	nop
   ENDIF
-  
+
   RET

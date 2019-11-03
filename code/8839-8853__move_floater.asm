@@ -1,7 +1,7 @@
 move_floater:
   LD A,(IX+FLOATER_VECTR)
   ADD A,A
-  LD HL,FLO_MOVE	
+  LD HL,FLO_MOVE
   LD B,0
   LD C,A
   ADD HL,BC

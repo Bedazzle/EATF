@@ -3,10 +3,10 @@ input_select:
   OR A
   RET Z
 
-  CALL choose_keyjoy	
+  CALL choose_keyjoy
 
   OR A
-  JR NZ,input_select	
+  JR NZ,input_select
 
   POP HL
 choose_loop:
@@ -20,7 +20,7 @@ choose_loop:
 loop_joykey:
   CALL repaint_buffer
   CALL print_string
-  
+
   TEXT 5, 12, "SELECT"
   TEXT 7, 7, "KEYBOARD OR JOYSTICK"
   TEXT 9, 10, "PRESS K OR J"

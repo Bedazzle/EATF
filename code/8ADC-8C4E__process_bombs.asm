@@ -84,8 +84,6 @@ proc_next_bomb:
   JR loop_bombs
 
 
-  
-  
 ; -----------------------------
 activate_bomb:
   LD A,(BC)
@@ -93,8 +91,8 @@ activate_bomb:
   RET C
 
   LD (IX+BOMB_ACTIVE),4
-  LD (IX+FUSE_GAP),6	
-  
+  LD (IX+FUSE_GAP),6
+
   RET
 ; -----------------------------
 del_bomb_sprite:
@@ -111,8 +109,6 @@ del_bomb_sprite:
 
   JR proc_next_bomb
 ; -----------------------------
-
-
 
 
 do_death_cross:
@@ -148,11 +144,11 @@ cross_explode:
   JR Z,do_near_cross
 
 check_cross_end:
-  ADD A,A		; 128 + 128 = 256 = 0
+  ADD A,A				; 128 + 128 = 256 = 0
   OR A
   JR Z,proc_next_bomb
 
-  
+
   ; ----------
 do_near_cross:
   LD A,(HL)
@@ -164,18 +160,19 @@ do_near_cross:
   ADD A,(IX+BOMB_X)
   LD C,A
 
-  CALL sub_8BF5
+  CALL boom_1
 
   CP 136					; border wall
   JR NZ,do_far_cross
-  JR skip_two_blocks
+  JR skip_3_blocks
 
   ; ??? not used start
-; Data block at 35741
-  DEFB 254,137,32,8		; previous JR can be removed, if these 4 bytes are placed in different location
+  DEFB 254,137,32,8		; previous JR can be removed, if these 4 bytes are removed too
+  ; cp 137
+  ; jr nz,$+8
   ; ??? not used end
 
-skip_two_blocks:
+skip_3_blocks:
   INC HL
   INC HL
 increment:
@@ -186,8 +183,8 @@ increment:
   JR cross_explode
   ; ----------
 
-  
-  
+
+
   ; ----------
 do_far_cross:
   LD A,(HL)
@@ -199,25 +196,24 @@ do_far_cross:
   ADD A,(IX+BOMB_X)
   LD C,A
 
-  CALL sub_8BF5
+  CALL boom_1
 
-  CP 128					; brick wall
-  JR C,loc_8BC6
+  CP 128					; brick wall...
+  JR C,far_cross
 
-  CP 138					; Eric
-  JR NC,loc_8BC6
+  CP 138					; ...Eric
+  JR NC,far_cross
 
-skip_one_block:
-  INC HL				; optimize by JR increment 
+skip_2_blocks:
+  INC HL				; optimize by JR increment
   INC HL
   INC HL
   INC HL
   JR cross_explode
   ; ----------
 
-  
-  
-loc_8BC6:
+
+far_cross:
   LD A,(HL)
   INC HL
   ADD A,(IX+BOMB_Y)
@@ -227,23 +223,24 @@ loc_8BC6:
   ADD A,(IX+BOMB_X)
   LD C,A
 
-  CALL sub_8C2E
+  CALL boom_2
 
   EX AF,AF'
-  CP 128
-  JR C,loc_8BE3
+  CP 128				; ...brick wall
+  JR C,farest_cross
 
-  CP 138
-  JR NC,loc_8BE3
+  CP 138				; Eric...
+  JR NC,farest_cross
 
   EX AF,AF'
+skip_1_block:
   INC HL
   INC HL
   JR cross_explode
   ; ----------
 
 
-loc_8BE3:
+farest_cross:
   EX AF,AF'
   LD A,(HL)
   INC HL
@@ -254,16 +251,13 @@ loc_8BE3:
   ADD A,(IX+BOMB_X)
   LD C,A
 
-  CALL sub_8C2E
+  CALL boom_2
 
   JR cross_explode
   ; ----------
 
 
-
-; Routine at 35829
-;
-sub_8BF5:
+boom_1:
   PUSH BC
 
   CALL calc_buff_addr
@@ -282,20 +276,20 @@ sub_8BF5:
   CP 136				; border wall
   RET Z
 
-  CP 128				; ...bomb
-  JR C,loc_8C12
+  CP 128				; ...brick wall
+  JR C,explosn_sprite
 
   CP 138				; Eric...
-  JR NC,loc_8C12
-  JR loc_8C17
+  JR NC,explosn_sprite	; optimize by change to JR C
+  JR do_explosn			; optimize by remove
 
-loc_8C12:
+explosn_sprite:
   EXX
   LD A,E
   EXX
   JR put_tile
 
-loc_8C17:
+do_explosn:
   CALL explode_bomb
 
   CP 136
@@ -305,8 +299,8 @@ clear_tile:
   LD A,32
 put_tile:
   LD (BC),A
-  RET
 
+  RET
 
 
 ; -----------------------------
@@ -326,12 +320,7 @@ bomb_wait:
 ; -----------------------------
 
 
-
-
-
-; Routine at 35886
-;
-sub_8C2E:
+boom_2:
   PUSH BC
 
   CALL calc_buff_addr

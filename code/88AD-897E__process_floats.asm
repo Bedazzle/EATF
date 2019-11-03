@@ -9,30 +9,33 @@ next_bubble:
   JP Z,get_next_bubble
 
   CP 1
-  JP Z,loc_893E
+  JP Z,is_floater_hit
 
   LD C,(IX+FLOATER_X)
   LD B,(IX+FLOATER_Y)
+
   CALL calc_buff_addr
 
   LD A,(IX+FLOATER_ALIVE)
   ADD A,A
   ADD A,30
   CP 48
-  JR C,loc_88D9
+  JR C,killed_floater
 
   LD A,32
+
   CALL put_4x_block
 
-  JR loc_88DC
+  JR put_floater
 
-loc_88D9:
+killed_floater:
   CALL put_object
 
-loc_88DC:
+put_floater:
   PUSH HL
 
   LD HL,FLOA_DEATH
+
   CALL safe_increment
 
   POP HL
@@ -43,7 +46,7 @@ loc_88DC:
   LD A,(IX+FLOATER_ALIVE)
   INC A
   CP 10
-  JR Z,loc_8908
+  JR Z,remove_floater
 
   LD (IX+FLOATER_ALIVE),A
   ADD A,A
@@ -67,7 +70,7 @@ loc_88DC:
   JP get_next_bubble
 
   ; --------------------
-loc_8908:
+remove_floater:
   XOR A
   LD (IX+FLOATER_ALIVE),A
   LD A,(IX+FLOATER_ANGRY)
@@ -87,9 +90,9 @@ loc_8908:
   LD HL,(SCORE)
   ADD HL,BC
   LD (SCORE),HL
-  
+
   ; --------------------
-  
+
   LD A,(ERIC_FRAME)
   CP 6
   JR NC,get_next_bubble
@@ -105,38 +108,38 @@ loc_8908:
   JR get_next_bubble
 
   ;------------------------
-loc_893E:
+is_floater_hit:
   LD C,(IX+FLOATER_X)
   LD B,(IX+FLOATER_Y)
 
   CALL calc_buff_addr
-  
+
   LD A,(IX+FLOATER_ANGRY)
   ADD A,A
   ADD A,A
-  ADD A,192
+  ADD A,192					; floater sprite
   LD HL,FLIP_FLOAT
   ADD A,(HL)
 
-  CALL check_224
-  
+  CALL floater_hit
+
   INC A
   INC BC
 
-  CALL check_224
-  
+  CALL floater_hit
+
   LD HL,31
   ADD HL,BC
   LD B,H
   LD C,L
   ADD A,15
 
-  CALL check_224
-  
+  CALL floater_hit
+
   INC BC
   INC A
 
-  CALL check_224
+  CALL floater_hit
 
 get_next_bubble:
   LD BC,7
@@ -144,10 +147,10 @@ get_next_bubble:
   JP next_bubble
 
 
-check_224:
+floater_hit:
   PUSH AF
   LD A,(BC)
-  CP 224
+  CP 224						; explosion sprite
   JR C,no_change
 
   LD (IX+FLOATER_ALIVE),2	; remove floater

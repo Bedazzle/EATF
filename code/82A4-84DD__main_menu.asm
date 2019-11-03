@@ -2,7 +2,7 @@ main_menu:
   CALL clear_playfield
   CALL repaint_buffer
 
-  LD HL,block_3
+  LD HL,MAIN_SPRITES
 
   CALL deblocker
   CALL set_menu_float
@@ -63,7 +63,7 @@ L33704:
   TEXT 20, 19, "START GAME "
 L33718:
   TEXT 10, 7, "UP"
-  
+
   BUTTON_GENERAL $0B, $05, "W I"	; "W", $19, "I"
   TEXT $12, $0B, "BOMB"
   BUTTON $13, $0A, "SPACE"
@@ -75,11 +75,10 @@ L33718:
   TEXT $0F, $14, "SCORE!"
 
   DEFB $FF
-  
-  LD HL,(HIGHSCORE)
+  LD HL,(HIGHSCORE)
   CALL parse_digits
   CALL print_string
-  
+
   TEXT $11, $05, "DOWN"
   BUTTON_GENERAL $12, $05, "X M"
   TEXT $0B, $14, "LAST"
@@ -90,15 +89,15 @@ L33718:
   LD HL,(SCORE)
   CALL parse_digits
   CALL print_string
-  
+
   DEFB $17, $05
   DEFM "[ HUDSON  SOFT    "
   DEFB $01, $09, $08, $03
   DEFB $00
-  
+
   TEXT $07, $02, "ERIC   FLOATER  BONUS   EXIT"
   TEXT $08, $12, "POINTS  PORTAL"
-  
+
   DEFB $FF
 
   LD BC, PLAYFIELD + 7*32	; x=0, y=7
@@ -124,7 +123,7 @@ show_gold_exit:
   LD BC, PLAYFIELD + 7*32 + 16	; x=16, y=7
   LD A,10			; GOLD 10-11, 26-27
   CALL put_object
-  
+
   LD BC, PLAYFIELD + 7*32 + 24	; x=24, y=7
   LD A,14			; EXIT 14-15, 30-31
 					; BOMB 96-97, 112-113

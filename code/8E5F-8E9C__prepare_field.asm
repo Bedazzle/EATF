@@ -13,7 +13,7 @@ fill_bottom:
   LD (HL),A			; bottom border
   INC HL
   DJNZ fill_bottom
-  
+
 fill_vertical:
   LD B,23
   LD HL,PLAYFIELD + 31
@@ -37,7 +37,7 @@ fill_concrete:
   OR A
   LD DE,29
   SBC HL,DE
-  DJNZ fill_concrete	
+  DJNZ fill_concrete
 
   LD DE,100
   ADD HL,DE

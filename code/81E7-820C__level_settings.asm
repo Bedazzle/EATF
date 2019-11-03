@@ -2,12 +2,12 @@ level_settings:
   LD A,(FLOATS_NUM)
   CP 6				; no more than 5 floaters
   JR C,float_num_ok
-  
+
   LD A,5
 float_num_ok:
   DEC A
   ADD A,A
-  LD HL,LEVEL_FLOATERS	
+  LD HL,LEVEL_FLOATERS
   LD C,A
   LD B,0
   ADD HL,BC

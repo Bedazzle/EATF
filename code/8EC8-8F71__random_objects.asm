@@ -5,22 +5,22 @@ random_objects:
   LD A,C
   LD (SOME_X),A
 
-  CP 2
+  CP 2					; too left, out of playfield
   JR C,random_objects
 
-  CP 13
+  CP 13					; too right
   JR NC,random_objects
 
   LD A,B
   LD (SOME_Y),A
 
   CP 2
-  JR C,random_objects
+  JR C,random_objects	; too up
 
-  CP 9
+  CP 9					; too down
   JR NC,random_objects
 
-  CALL mult_by_2
+  CALL double_b_c
 
   PUSH BC
 
@@ -45,48 +45,50 @@ new_wall:
 new_wall_coords:
   CALL random_coords
 
-  LD D,B
-  LD E,C
+  LD D,B					; y
+  LD E,C					; x
   LD A,(SOME_X)
   SUB E
-  JR NC,l_36616
+  JR NC,diff_x
 
   NEG
 
-l_36616:
+diff_x:
   CP FREE_AROUND
-  JR NC,l_36634
+  JR NC,x_is_even
 
   LD A,(SOME_Y)
   SUB D
-  JR NC,l_36628
+  JR NC,diff_y
 
   NEG
 
-l_36628:
+diff_y:
   CP FREE_AROUND
-  JR NC,l_36634
+  JR NC,x_is_even
   JR new_wall_coords
 
-l_36634:
-  LD A,C
+x_is_even:
+  LD A,C					; x
   BIT 0,A
-  JR Z,l_36646
+  JR Z,y_is_even
 
-  LD A,B
+  LD A,B					; y
   BIT 0,A
   JR NZ,new_wall_coords
-  JR l_36651
+  JR wall_coords_ok
 
-l_36646:
-  LD A,B
+y_is_even:
+  LD A,B					; y
   BIT 0,A
   JR Z,new_wall_coords
 
-l_36651:
-  CALL mult_by_2
+wall_coords_ok:
+  CALL double_b_c
 
-  LD HL,SOME_TABLE
+  ; ---------------------------
+
+  LD HL,WALLS_TABLE
 get_from_table:
   LD A,(HL)
   INC A

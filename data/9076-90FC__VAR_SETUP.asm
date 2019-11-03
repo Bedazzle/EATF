@@ -33,9 +33,9 @@ VAR_SETUP:
   DEFB 0,0,0,3,5,0	; 8
   DEFB 0,0,0,0,2,3	; 9
   DEFB 0,0,255,255,255,255	; 10
-  
+
   DEFB 0			; FLIP_FLOAT
-  
+
   ; bombs
   DEFB 0,0,0,0		; 1
   DEFB 0,0,0,0		; 2
@@ -43,7 +43,7 @@ VAR_SETUP:
   DEFB 0,0,0,0		; 4
   DEFB 0,0,0,0		; 5
   DEFB 255		; BOMBS_TERM
-  
+
   DEFB 0			; FLIP_BOMB
   DEFB 0			; ANI_DELAY
   DEFB 4			; ANI_MAX
@@ -60,11 +60,11 @@ VAR_SETUP:
   DEFB 0			; ERIC_DEAD
   DEFB 0			; SOME_X
   DEFB 0			; SOME_Y
-  
+
   DEFB 1			; GOLD_X
   DEFB 1			; GOLD_Y
   DEFB 0			; GOLD_CHEST
-  
+
   DEFB 1			; EXIT_X
   DEFB 1			; EXIT_Y
   DEFB 0			; EXIT_DOOR

@@ -8,7 +8,7 @@ minus_life:
   ELSE
 	NOP
   ENDIF
-  
+
   OR A
   LD (ERICS_LEFT),A
   JR Z,no_erics_left

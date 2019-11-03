@@ -13,7 +13,7 @@ no_highscore:
   CALL fill_by_byte
   DEFB $20, $10, $11, $12, $13, $14, $21, $20	; " SCORE: "
   DEFB $00
-  
+
   LD HL,(SCORE)
   CALL parse_digits
 
@@ -39,8 +39,8 @@ no_highscore:
   INC BC
   CALL fill_by_byte
   DEFB $20, $20, $20, $20, $14, $13, $97, $11, $10, $21, $20	; "    ERICS: "
-  DEFB $00  
-  
+  DEFB $00
+
   LD A,(ERICS_LEFT)
   LD (BC),A
   INC BC
@@ -48,5 +48,5 @@ no_highscore:
   CALL fill_by_byte
   DEFB $20, $20, $20, $20, $20	; "     "
   DEFB $00
-  
+
   RET

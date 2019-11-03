@@ -18,5 +18,5 @@ not_empty:
 
   INC BC
   LD A,(BC)
-  
+
   RET	; last block is checked outside this procedure

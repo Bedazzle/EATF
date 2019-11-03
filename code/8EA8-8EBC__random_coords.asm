@@ -17,5 +17,5 @@ gen_coord_y:
   JR NC,gen_coord_y
 
   LD B,A
-  
+
   RET

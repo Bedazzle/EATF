@@ -119,14 +119,14 @@ STACK		EQU	$F000	; 61440
 FIELD		EQU $FD00	; 64768
 
 	;DEFINE INFINITE_ERICS	; Infinite lives: 33245,0
-	;DEFINE INFINITE_TIME	; Infinite bonus time: 34093,0 
+	;DEFINE INFINITE_TIME	; Infinite bonus time: 34093,0
 	;DEFINE INFINITE_GOLD
 	;DEFINE IMMUNE_ERIC	; Immune to floaters and bomb
 	;DEFINE NO_EXTRA	; No extra floaters when exit/chest is destroyed
 	;DEFINE FREEZE_FLOAT	; Stop floaters move
 	;DEFINE ANGRY_FLOAT	; Floaters chase Eric
 	;DEFINE NO_CLEAR	; Turn off playfield clear on zero time
-	;DEFINE WALKTHROUGH	; Eric can walk through walls	
+	;DEFINE WALKTHROUGH	; Eric can walk through walls
 	;DEFINE SMALLRANGE	; short explosion range
 	DEFINE SOUND_EXPLOSION
 	DEFINE SOUND_GOLD

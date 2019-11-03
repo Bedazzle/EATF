@@ -19,17 +19,6 @@ PAP_SKY	EQU CL_SKY << 3
 PAP_YEL	EQU CL_YEL << 3
 PAP_WHT	EQU CL_WHT << 3
 
-;	MACRO GETLEN txt
-;.savedorg equ $
-;		
-;		ORG 0
-;		DEFB txt
-;		
-;strlen equ $
-;		
-;		ORG .savedorg
-;	ENDM
-
 	MACRO TEXT y, x, txt
 		DEFB y, x
 		DEFM txt
@@ -46,33 +35,33 @@ PAP_WHT	EQU CL_WHT << 3
 
 		DEFB y, x
 		DEFB $10		; LT corner
-		
+
 
 		DUP .strlen
 			DEFB $14	; horizontal line
 		EDUP
-		
+
 		DEFB $11		; RT corner
 		DEFB 0
 
 		DEFB y+1, x
 		DEFB $15		; left vertical line
 		DEFM txt
-		
+
 		DEFB $16		; right vertical line
 		DEFB 0
 
 		DEFB y+2, x
 		DEFB $12		; LB corner
-		
+
 		DUP .strlen
 			DEFB $14
 		EDUP
-		
+
 		DEFB $13		; RB corner
 		DEFB 0
 	ENDM
-	
+
 	MACRO BUTTON_GENERAL y, x, txt
 .savedorg equ $
 		ORG 0
@@ -83,11 +72,11 @@ PAP_WHT	EQU CL_WHT << 3
 
 		DEFB y, x
 		DEFB $10		; LT corner
-		
+
 		DUP .strlen
 			DEFB $14	; horizontal line
 		EDUP
-		
+
 		DEFB $11		; RT corner
 		DEFB 0
 
@@ -96,10 +85,10 @@ PAP_WHT	EQU CL_WHT << 3
 
 .xorg equ $
 		DEFM txt
-		
+
 		org .xorg + 1
 		DEFB $19
-		
+
 		org .xorg + 3
 
 		DEFB $16		; right vertical line
@@ -107,12 +96,12 @@ PAP_WHT	EQU CL_WHT << 3
 
 		DEFB y+2, x
 		DEFB $12		; LB corner
-		
+
 		DUP .strlen
 			DEFB $14
 		EDUP
-		
-		
+
+
 		DEFB $13		; RB corner
 		DEFB 0
 	ENDM

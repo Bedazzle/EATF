@@ -12,12 +12,12 @@ check_passage:
 
   CP 136				; border wall
   JR NZ,check_concrete
-  
+
   INC D
 
 check_concrete:
   CP 137				; concrete wall
-  JR NZ,check_brick	
+  JR NZ,check_brick
 
   INC D
 

@@ -5,6 +5,6 @@ death_loop:
   DEC HL
   LD A,H
   OR L
-  JR NZ,death_loop	
+  JR NZ,death_loop
 
   RET

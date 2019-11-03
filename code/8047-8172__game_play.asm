@@ -41,7 +41,7 @@ level_start:
   CALL clear_playfield
   CALL repaint_buffer
   CALL reset_buffer
-  CALL prepare_field	
+  CALL prepare_field
   CALL random_objects
 
   XOR A

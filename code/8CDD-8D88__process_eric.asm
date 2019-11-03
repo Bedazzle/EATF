@@ -6,7 +6,7 @@ process_eric:
   LD A,(ERIC_FRAME)
   CP 6
   JR C,eric_alive
-  
+
   CP 13
   JR Z,kill_eric
 
@@ -51,7 +51,7 @@ eric_alive:
 
   CP 5
   JR Z,animate_eric	; go down
-  
+
   INC B
   CP 7
   JR Z,animate_eric	; go left

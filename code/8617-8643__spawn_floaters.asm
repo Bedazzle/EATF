@@ -20,7 +20,6 @@ rnd_floaters:
   LD A,(HL)
   LD (IX+FLOATER_Y),A
   LD (IX+FLOATER_ALIVE),1
- 
   LD DE,7
   ADD IX,DE
   DEC B

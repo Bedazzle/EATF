@@ -7,7 +7,7 @@ pick_gold:
   ELSE
 	nop
   ENDIF
-  
+
   LD BC,(GOLD_X)
   LD D,B
   LD E,C

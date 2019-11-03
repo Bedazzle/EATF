@@ -30,7 +30,7 @@ show_exit:
   LD A,(EXIT_DOOR)
   OR A
   RET Z
-  
+
   LD BC,(EXIT_X)
 
   CALL calc_buff_addr
@@ -49,7 +49,7 @@ show_exit:
   ADD HL,BC
   LD B,H
   LD C,L
-  
+
   ADD A,15
 
   CALL door_explode

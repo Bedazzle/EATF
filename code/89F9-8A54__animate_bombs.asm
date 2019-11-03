@@ -13,7 +13,7 @@ anim_bomb:
   JR Z,anim_next_bomb
 
   CP 5
-  JR NC,explode	
+  JR NC,explode
 
 change_fuse:
   LD A,(IX+FUSE_GAP)

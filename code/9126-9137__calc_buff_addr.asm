@@ -1,6 +1,6 @@
 ;
 ; calculate address in playfield buffer $C38C (50060) (like screen, 32x24)
-; in: 
+; in:
 ;     B = row
 ;     C = column
 ;     HL = ?
@@ -10,7 +10,7 @@ calc_buff_addr:
   PUSH HL
   LD L,B			; screen row
   LD H,0
-  LD B,H	
+  LD B,H
   ADD HL,HL
   ADD HL,HL
   ADD HL,HL

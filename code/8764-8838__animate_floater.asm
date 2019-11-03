@@ -8,7 +8,7 @@ animate_floater:
 	RET NZ
   ENDIF
 
-  LD A,(FLIP_FLOAT)	; ingame floater sprite 
+  LD A,(FLIP_FLOAT)	; ingame floater sprite
   XOR 2
   LD (FLIP_FLOAT),A
 
@@ -50,7 +50,7 @@ set_speed:
   LD A,(FLOA_DELAY)
   AND 3
   JP NZ,inc_floater
-  
+
 set_angry_speed:
   LD A,(IX+FLOATER_ANGRY)
   OR A
@@ -69,7 +69,7 @@ set_angry_speed:
   OR A
   JR Z,floater_3
 
-  CALL float_test_xy	
+  CALL float_test_xy
 
   CP 128
   JR NC,floater_2
@@ -85,12 +85,12 @@ floater_2:
   AND 3
   LD (IX+FLOATER_VECTR),A
 
-  CALL float_test_xy	
+  CALL float_test_xy
 
   CP 128
   JR NC,inc_floater
 
-  CALL move_floater	
+  CALL move_floater
 
   JR inc_floater
 
@@ -101,13 +101,13 @@ floater_3:
   AND 3
   LD (IX+FLOATER_VECTR),A
 
-  CALL float_test_xy	
+  CALL float_test_xy
 
   CP 128
   JR NC,inc_floater
 
   CALL move_floater
-  
+
   JR inc_floater
   ;------------------------
 
@@ -126,7 +126,7 @@ chase_right:
 chase_left:
   LD (IX+FLOATER_VECTR),0
 chase_horz:
-  CALL float_test_xy	
+  CALL float_test_xy
 
   CP 128
   JR C,do_float_move
@@ -146,7 +146,7 @@ chase_down:
 chase_up:
   LD (IX+FLOATER_VECTR),2
 chase_vert:
-  CALL float_test_xy	
+  CALL float_test_xy
 
   CP 128
   JP NC,inc_floater

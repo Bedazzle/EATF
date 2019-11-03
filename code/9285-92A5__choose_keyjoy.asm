@@ -16,7 +16,7 @@ choose_keyjoy:
 
   OR A
   RET Z
-  
+
 enable_joy:
   LD A,1
 set_keyjoy:

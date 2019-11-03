@@ -13,7 +13,7 @@ process_time:
   ELSE
 	LD BC,0
   ENDIF
-  
+
   SBC HL,BC
   LD (BONUS_TIME),HL
   RET
@@ -26,7 +26,7 @@ do_clear:
   ELSE
 	RET
   ENDIF
-    
+
   CALL reset_buffer
 
   ; optimize start
