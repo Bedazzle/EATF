@@ -1,5 +1,7 @@
 # EATF
 Eric & the floaters disassembly
+reversed in 2019.11
+sources can be compiled with SjASM+
 
 https://www.worldofspectrum.org/infoseekid.cgi?id=0001639
 

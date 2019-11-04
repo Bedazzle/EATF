@@ -1,6 +1,7 @@
 ; Eric and the floaters
 ; full disassembly
-; reversed in 2019
+; reversed in 2019.11
+; sources can be compiled with SjASM+
 
   device zxspectrum48
 
@@ -166,7 +167,6 @@ x_8F83:		; 36739
   include "/code/8F8C-8FAB__random.asm"
 
 
-  ; block at 36780
   ; ??? not used start
 l_36780:
   cp      10
@@ -263,13 +263,48 @@ DEATH_CROSS:
 
 
 KEYS_KEYBOARD:
-  DEFM "WIEODLC"
-  DEFB 14		; Symbol Shift
-  DEFM "XMZNAJQU"
+  DEFM "W"	; 16	; up = (18-16)/2 = 1
+  DEFM "I"	; 15	; up
+  DEFM "E"	; 14
+  DEFM "O"	; 13
+  DEFM "D"	; 12	; right = (18-12)/2 = 3
+  DEFM "L"	; 11	; right
+  DEFM "C"	; 10
+  DEFB 14	; 9		; Symbol Shift
+  DEFM "X"	; 8		; down = (18-8)/2 = 5
+  DEFM "M"	; 7		; down
+  DEFM "Z"	; 6
+  DEFM "N"	; 5
+  DEFM "A"	; 4		; left = (18-4)/2 = 7
+  DEFM "J"	; 3		; left
+  DEFM "Q"	; 2
+  DEFM "U"	; 1
 
 
   INCLUDE "/code/91B3-91D8__read_keyboard.asm"
-  INCLUDE "/code/91D9-9222__control_eric.asm"
+  INCLUDE "/code/91D9-91F8__control_eric.asm"
+
+
+KEYS_JOYSTICK:
+  DEFB 0		; 0
+  DEFB 1		; 1		; up
+  DEFB 5		; 2		; down
+  DEFB 0		; 3
+  DEFB 3		; 4		; right
+  DEFB 2		; 5
+  DEFB 4		; 6
+  DEFB 0		; 7
+  DEFB 7		; 8		; left
+  DEFB 8		; 9
+  DEFB 6		; 10
+  DEFB 0		; 11
+  DEFB 0		; 12
+  DEFB 1		; 13	; left+right+up = up
+  DEFB 5		; 14	; left+right+down = down
+  DEFB 0		; 15
+
+
+  INCLUDE "/code/9208-9222__control_by_key.asm"
   INCLUDE "/code/9223-925B__inkey.asm"
 
 

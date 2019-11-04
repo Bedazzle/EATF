@@ -8,7 +8,7 @@ MASK_INT	EQU 56
 ERICS_NUMB	EQU 3
 WALLS_NUMB	EQU 35
 FREE_AROUND	EQU 2	; empty space around Eric
-START_TIME	EQU 1000 ;- 900
+START_TIME	EQU 1000
 START_FLOAT EQU 1
 EXTRA_FLOAT EQU 4	; max=4 floaters to add when exploding exit/chest
 BONUS_DECR	EQU 10	; on level complete
@@ -22,6 +22,7 @@ KEY_CHECK	EQU $C004	; 49156
 
 ; -----------------------------
 VARIABLES	EQU $C005	; 49157
+; --
 SOUND_1		EQU $C005	; 49157 buffer, length 146
 SOUND_2		EQU $C007	; 49159
 SOUND_3		EQU $C009	; 49161
